@@ -1,0 +1,106 @@
+Imds:
+  ImdsSupport: v2.0
+HeadNode:
+  InstanceType: c5.xlarge
+  Imds:
+    Secured: false
+  Ssh:
+    KeyName: PclusterKeyPair
+  LocalStorage:
+    RootVolume:
+      VolumeType: gp3
+      Size: 512
+  Networking:
+    SubnetId: subnet-060e9faee76679f67
+    AdditionalSecurityGroups:
+      - sg-0d2f7c1635c457f03
+      - sg-0c87f3cc385a3c147
+      - sg-0e39397679e3c4cb5
+  Iam:
+    AdditionalIamPolicies:
+      - Policy: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      - Policy: arn:aws:iam::aws:policy/SecretsManagerReadWrite
+      - Policy: arn:aws:iam::600627354061:policy/FsxPclusterUserPolicy
+      - Policy: arn:aws:iam::aws:policy/CloudWatchFullAccess
+      - Policy: arn:aws:iam::aws:policy/AWSPriceListServiceFullAccess
+      - Policy: arn:aws:iam::aws:policy/AmazonSSMFullAccess
+      - Policy: arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess
+  CustomActions:
+    OnNodeConfigured:
+      Sequence:
+        - Script: https://raw.githubusercontent.com/aws-samples/aws-parallelcluster-post-install-scripts/main/rest-api/postinstall.sh
+        - Script: https://raw.githubusercontent.com/zhaohaom-aws/aws-parallelcluster-monitoring/main/post-install.sh
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+    - Name: queue-1
+      AllocationStrategy: lowest-price
+      ComputeResources:
+      - Efa:
+          Enabled: true
+        InstanceType: trn1.32xlarge
+        MaxCount: 1
+        MinCount: 0
+        Name: kaena-training-0
+      - Efa:
+          Enabled: true
+        InstanceType: trn1.32xlarge
+        MaxCount: 1
+        MinCount: 0
+        Name: kaena-training-1
+      - Efa:
+          Enabled: true
+        InstanceType: trn1.32xlarge
+        MaxCount: 1
+        MinCount: 0
+        Name: kaena-training-2
+      - Efa:
+          Enabled: true
+        InstanceType: trn1.32xlarge
+        MaxCount: 1
+        MinCount: 0
+        Name: kaena-training-3
+      ComputeSettings:
+        LocalStorage:
+          RootVolume:
+            VolumeType: gp3
+            Size: 512
+          EphemeralVolume:
+            MountDir: /local_storage
+      CustomActions:
+        OnNodeConfigured:
+          Script: https://raw.githubusercontent.com/zhaohaom-aws/aws-parallelcluster-monitoring/main/post-install.sh
+      Networking:
+        SubnetIds:
+          - subnet-02961b064555b7b26
+        PlacementGroup:
+          Enabled: false
+      Iam:
+        AdditionalIamPolicies:
+          - Policy: arn:aws:iam::aws:policy/AmazonS3FullAccess
+          - Policy: >-
+              arn:aws:iam::aws:policy/AmazonElasticContainerRegistryPublicFullAccess
+          - Policy: arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+          - Policy: arn:aws:iam::600627354061:policy/FsxPclusterUserPolicy
+  SlurmSettings:
+    QueueUpdateStrategy: TERMINATE
+    Database:
+      Uri: >-
+        slurm-accounting-cluster.cluster-c1s046ccsiof.us-west-2.rds.amazonaws.com:3306
+      UserName: clusteradmin
+      PasswordSecretArn: >-
+        arn:aws:secretsmanager:us-west-2:600627354061:secret:AccountingClusterAdminSecre-cO3gvYHQxo2j-RclylZ
+Region: us-west-2
+Image:
+  Os: alinux2
+Tags:
+  - Key: parallelcluster-ui
+    Value: 'true'
+  - Key: Grafana
+    Value: 'true'
+SharedStorage:
+  - Name: FsxLustre0
+    StorageType: FsxLustre
+    MountDir: /fsx
+    FsxLustreSettings:
+      FileSystemId: fs-0850ce039c4b8110e
