@@ -5,7 +5,7 @@ HeadNode:
   Imds:
     Secured: false
   Ssh:
-    KeyName: PclusterKeyPair
+    KeyName: PclusterKeyPairEd25519
   LocalStorage:
     RootVolume:
       VolumeType: gp3
@@ -13,8 +13,8 @@ HeadNode:
   Networking:
     SubnetId: subnet-060e9faee76679f67
     AdditionalSecurityGroups:
-      - sg-0d2f7c1635c457f03
-      - sg-0c87f3cc385a3c147
+      - sg-09ac85e6615996eb6
+      - sg-0f5021b67d80b1fe0
       - sg-0e39397679e3c4cb5
   Iam:
     AdditionalIamPolicies:
@@ -30,6 +30,8 @@ HeadNode:
       Sequence:
         - Script: https://raw.githubusercontent.com/aws-samples/aws-parallelcluster-post-install-scripts/main/rest-api/postinstall.sh
         - Script: https://raw.githubusercontent.com/zhaohaom-aws/aws-parallelcluster-monitoring/main/post-install.sh
+          Args:
+            - v1.0
 Scheduling:
   Scheduler: slurm
   SlurmQueues:
@@ -39,8 +41,8 @@ Scheduling:
       - Efa:
           Enabled: true
         InstanceType: trn1.32xlarge
-        MaxCount: 1
-        MinCount: 0
+        MaxCount: 2
+        MinCount: 1
         Name: kaena-training-0
       - Efa:
           Enabled: true
@@ -50,13 +52,13 @@ Scheduling:
         Name: kaena-training-1
       - Efa:
           Enabled: true
-        InstanceType: trn1.32xlarge
+        InstanceType: trn1.2xlarge
         MaxCount: 1
         MinCount: 0
         Name: kaena-training-2
       - Efa:
           Enabled: true
-        InstanceType: trn1.32xlarge
+        InstanceType: trn1.2xlarge
         MaxCount: 1
         MinCount: 0
         Name: kaena-training-3
@@ -89,10 +91,10 @@ Scheduling:
         slurm-accounting-cluster.cluster-c1s046ccsiof.us-west-2.rds.amazonaws.com:3306
       UserName: clusteradmin
       PasswordSecretArn: >-
-        arn:aws:secretsmanager:us-west-2:600627354061:secret:AccountingClusterAdminSecre-cO3gvYHQxo2j-RclylZ
+        arn:aws:secretsmanager:us-west-2:600627354061:secret:AccountingClusterAdminSecre-vZPCtynf6rMD-2aKpgS
 Region: us-west-2
 Image:
-  Os: alinux2
+  Os: ubuntu2204
 Tags:
   - Key: parallelcluster-ui
     Value: 'true'
