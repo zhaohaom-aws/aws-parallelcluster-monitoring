@@ -31,7 +31,7 @@ HeadNode:
         - Script: https://raw.githubusercontent.com/aws-samples/aws-parallelcluster-post-install-scripts/main/rest-api/postinstall.sh
         - Script: https://raw.githubusercontent.com/zhaohaom-aws/aws-parallelcluster-monitoring/main/post-install.sh
           Args:
-            - v1.0
+            - u22-v1.0
 Scheduling:
   Scheduler: slurm
   SlurmQueues:
@@ -52,13 +52,13 @@ Scheduling:
         Name: kaena-training-1
       - Efa:
           Enabled: true
-        InstanceType: trn1.2xlarge
+        InstanceType: trn1.32xlarge
         MaxCount: 1
         MinCount: 0
         Name: kaena-training-2
       - Efa:
           Enabled: true
-        InstanceType: trn1.2xlarge
+        InstanceType: trn1.32xlarge
         MaxCount: 1
         MinCount: 0
         Name: kaena-training-3
