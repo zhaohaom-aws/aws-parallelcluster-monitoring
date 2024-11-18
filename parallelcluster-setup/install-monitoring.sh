@@ -41,7 +41,7 @@ echo "$> variable monitoring_home -> ${monitoring_home}"
 
 case "${cfn_node_type}" in
 	HeadNode | MasterServer)
-
+		sudo apt-get -y install cloud-utils
 		#cfn_efs=$(cat /etc/chef/dna.json | grep \"cfn_efs\" | awk '{print $2}' | sed "s/\",//g;s/\"//g")
 		#cfn_cluster_cw_logging_enabled=$(cat /etc/chef/dna.json | grep \"cfn_cluster_cw_logging_enabled\" | awk '{print $2}' | sed "s/\",//g;s/\"//g")
 		cfn_fsx_fs_id=$(cat /etc/chef/dna.json | grep \"cfn_fsx_fs_id\" | awk '{print $2}' | sed "s/\",//g;s/\"//g")
@@ -55,7 +55,8 @@ case "${cfn_node_type}" in
 
 		aws s3api get-object --bucket $cluster_s3_bucket --key $cluster_config_s3_key --region $cfn_region --version-id $cluster_config_version ${monitoring_home}/parallelcluster-setup/cluster-config.json
 
-		yum -y install golang-bin
+		sudo apt install -y golang-go
+		
 
 		chown $cfn_cluster_user:$cfn_cluster_user -R /home/$cfn_cluster_user
 		chmod +x ${monitoring_home}/custom-metrics/*
